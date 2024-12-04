@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% load report_filters %}
+    <h2>{{ report_type|format_report_name }}</h2>
+
+    <form method="GET" class="mb-4">
+        {% if report_type == 'customers_by_seller' %}
+            <div class="form-group">
+                <label for="seller_id">Select a Seller:</label>
+                <select name="seller_id" id="seller_id" class="form-control">
+                    <option value="">--- Select Seller ---</option>
+                    {% for seller in sellers %}
+                        <option value="{{ seller.id }}" {% if seller.id == selected_seller.id %}selected{% endif %}>
+                            {{ seller.first_name }} {{ seller.last_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
+        {% if report_type == 'sales_by_date' %}
+            <div class="form-group">
+                <label for="sale_date">Select a Date:</label>
+                <input type="date" name="sale_date" id="sale_date" class="form-control" value="{{ selected_date|date:'Y-m-d' }}">
+            </div>
+        {% endif %}
+
+        {% if report_type == 'sellers_by_product' %}
+            <div class="form-group">
+                <label for="product_id">Select a Product:</label>
+                <select name="product_id" id="product_id" class="form-control">
+                    <option value="">--- Select Product ---</option>
+                    {% for product in products %}
+                        <option value="{{ product.id }}" {% if product.id == selected_product.id %}selected{% endif %}>
+                            {{ product.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
+        {% if report_type == 'customers_by_product' %}
+            <div class="form-group">
+                <label for="product_id">Select a Product:</label>
+                <select name="product_id" id="product_id" class="form-control">
+                    <option value="">--- Select Product ---</option>
+                    {% for product in products %}
+                        <option value="{{ product.id }}" {% if product.id == selected_product.id %}selected{% endif %}>
+                            {{ product.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
+        {% if report_type == 'total_sales_by_date' %}
+            <div class="form-group">
+                <label for="sale_date">Select a Date:</label>
+                <input type="date" name="sale_date" id="sale_date" class="form-control" value="{{ selected_date|date:'Y-m-d' }}">
+            </div>
+        {% endif %}
+
+        {% if is_period_based %}
+            <div class="form-group">
+                <label for="start_date">Select Start Date:</label>
+                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ selected_start_date|date:'Y-m-d' }}">
+            </div>
+            <div class="form-group">
+                <label for="end_date">Select End Date:</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ selected_end_date|date:'Y-m-d' }}">
+            </div>
+        {% endif %}
+
+        {% if show_generate_button %}
+            <button type="submit" class="btn btn-primary mt-3">Generate Report</button>
+        {% endif %}
+    </form>
+
+
+    {% if results %}
+        <h3>Results:</h3>
+        {% if report_type == 'customers_by_seller' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.id }}</td>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{{ customer.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'sales_by_date' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sale ID</th>
+                        <th>Product ID</th>
+                        <th>Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Sale Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ sale.id }}</td>
+                            <td>{{ sale.product_id }}</td>
+                            <td>{{ sale.quantity }}</td>
+                            <td>${{ sale.total_amount }}</td>
+                            <td>{{ sale.sale_date }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'sellers_by_product' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Seller ID</th>
+                        <th>Seller Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seller in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ seller.id }}</td>
+                            <td>{{ seller.first_name }} {{ seller.last_name }}</td>
+                            <td>{{ seller.phone }}</td>
+                            <td>{{ seller.email }}</td>
+                            <td>{{ seller.get_position_display }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'customers_by_product' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.id }}</td>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{{ customer.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'total_sales_by_date' %}
+            <div class="alert alert-info">{{ results }}</div>
+        {% elif report_type == 'top_selling_product' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Total Sold Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description }}</td>
+                            <td>{{ product.total_quantity }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'top_seller' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Seller ID</th>
+                        <th>Seller Name</th>
+                        <th>Position</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seller in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ seller.id }}</td>
+                            <td>{{ seller.first_name }} {{ seller.last_name }}</td>
+                            <td>{{ seller.get_position_display }}</td>
+                            <td>${{ seller.total_sales }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'top_customer' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Total Purchases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.id }}</td>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                            <td>${{ customer.total_purchases }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'top_product_by_period' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Total Sold Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description }}</td>
+                            <td>{{ product.total_sold }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'top_seller_by_period' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Seller ID</th>
+                        <th>Seller Name</th>
+                        <th>Position</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seller in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ seller.id }}</td>
+                            <td>{{ seller.first_name }} {{ seller.last_name }}</td>
+                            <td>{{ seller.get_position_display }}</td>
+                            <td>${{ seller.total_sales }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif report_type == 'top_customer_by_period' %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Total Purchases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.id }}</td>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>${{ customer.total_purchases }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+
+    {% if no_results %}
+        <div class="alert alert-warning mt-4">
+            No results found for the selected parameters.
+        </div>
+    {% endif %}
+</div>
+
+{#<script>#}
+{#    document.addEventListener('DOMContentLoaded', function () {#}
+{#        const dateInput = document.getElementById('sale_date');#}
+{#        if (dateInput) {#}
+{#            dateInput.addEventListener('input', function () {#}
+{#                let value = this.value;#}
+{#                if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {#}
+{#                    const [day, month, year] = value.split('.');#}
+{#                    this.value = `${year}-${month}-${day}`;#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#    });#}
+{#</script>    #}
+
+{% endblock %}

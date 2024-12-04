@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Company Sales</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">Company Sales</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'list_products' %}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'list_sales' %}">Sales</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'list_sellers' %}">Sellers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'list_customers' %}">Customers</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            Reports
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'customers_by_seller' %}">Customers by Seller</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sales_by_date' %}">Sales by Date</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sellers_by_product' %}">Sellers by Product</a></li>
+                            <li><a class="dropdown-item" href="{% url 'customers_by_product' %}">Customers by Product</a></li>
+                            <li><a class="dropdown-item" href="{% url 'total_sales_by_date' %}">Total Sales by Date</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'top_selling_product' %}">Top Product</a></li>
+                            <li><a class="dropdown-item" href="{% url 'top_seller' %}">Top Seller</a></li>
+                            <li><a class="dropdown-item" href="{% url 'top_customer' %}">Top Customer</a></li>
+                            <li><a class="dropdown-item" href="{% url 'top_product_by_period' %}">Top Product by Period</a></li>
+                            <li><a class="dropdown-item" href="{% url 'top_seller_by_period' %}">Top Seller by Period</a></li>
+                            <li><a class="dropdown-item" href="{% url 'top_customer_by_period' %}">Top Customer by Period</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

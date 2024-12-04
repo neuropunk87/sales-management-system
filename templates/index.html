@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{#{% block title %}Home{% endblock %}#}
+{% block content %}
+    <div class="text-center">
+        <h1>Welcome to Sales Management System</h1>
+        <p class="lead">Manage your customers, sellers, products and sales effortlessly!</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{% url 'list_products' %}" class="btn btn-primary btn-lg">Manage Products</a>
+            <a href="{% url 'list_sales' %}" class="btn btn-warning btn-lg">Manage Sales</a>
+            <a href="{% url 'list_sellers' %}" class="btn btn-info btn-lg">Manage Sellers</a>
+            <a href="{% url 'list_customers' %}" class="btn btn-success btn-lg">Manage Customers</a>
+        </div>
+    </div>
+{% endblock %}
